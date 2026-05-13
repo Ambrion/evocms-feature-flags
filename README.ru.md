@@ -7,7 +7,7 @@
 ## 📦 Установка
 
 ```bash
-php -d="memory_limit=-1" artisan package:installrequire ambrion/evocms-feature-flags "0.1.0-alpha"
+php -d="memory_limit=-1" artisan package:installrequire ambrion/evocms-feature-flags "v0.1.0-alpha"
 php artisan vendor:publish --provider=EvolutionCMS\FeatureFlags\FeatureFlagsServiceProvider
 php artisan migrate
 ```
