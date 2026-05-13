@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        $prefix = config('database.connections.mysql.prefix', '');
+        $prefix = config('database.connections.default.prefix', '');
 
         Schema::create($prefix . 'feature_flags', function (Blueprint $table) {
             $table->string('name', 100)->primary()->comment('Имя флага в snake_case');
@@ -32,7 +32,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        $prefix = config('database.connections.mysql.prefix', '');
+        $prefix = config('database.connections.default.prefix', '');
         Schema::dropIfExists($prefix . 'feature_flags');
     }
 };
