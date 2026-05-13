@@ -78,7 +78,7 @@
 
         <div class="alert alert-warning mt-3 mb-0">
             <i class="fa fa-exclamation-triangle me-2"></i>
-            <strong>Важно:</strong> Проверь, что файл <code>core/custom/packages/featureFlags/config/feature_flags_rules.php</code> на месте и в нём есть правила. Без них демо будет скучным, как понедельник утром.
+            <strong>Важно:</strong> Проверь, что файл <code>core/vendor/ambrion/evocms-feature-flags/config/feature_flags_rules.php</code> на месте и в нём есть правила. Без них демо будет скучным, как понедельник утром.
         </div>
 
         <hr class="my-4">

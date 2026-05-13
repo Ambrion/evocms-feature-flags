@@ -78,7 +78,7 @@
 
         <div class="alert alert-warning mt-3 mb-0">
             <i class="fa fa-exclamation-triangle me-2"></i>
-            <strong>Important:</strong> Make sure <code>core/custom/packages/featureFlags/config/feature_flags_rules.php</code> exists and contains rules. Without them, the demo will be as boring as a Monday morning.
+            <strong>Important:</strong> Make sure <code>core/vendor/ambrion/evocms-feature-flags/config/feature_flags_rules.php</code> exists and contains rules. Without them, the demo will be as boring as a Monday morning.
         </div>
 
         <hr class="my-4">
