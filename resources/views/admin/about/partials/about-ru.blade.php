@@ -33,7 +33,7 @@
                     </div>
                     <div class="card-body">
                         <p class="small mb-2">Создай сниппет <strong>FeatureFlagsDemo</strong> и вставь:</p>
-                        <pre class="bg-light p-2 rounded small mb-0"><code class="language-php">return require MODX_BASE_PATH . 'core/custom/packages/featureFlags/snippets/snippet.FeatureFlagsDemo.php';</code></pre>
+                        <pre class="bg-light p-2 rounded small mb-0"><code class="language-php">return require MODX_BASE_PATH . 'core/vendor/ambrion/evocms-feature-flags/snippets/snippet.FeatureFlagsDemo.php';</code></pre>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="card-body">
                         <p class="small mb-2">Создай документ и вставь содержимое из:</p>
-                        <pre class="bg-light p-2 rounded small mb-0"><code>core/custom/packages/featureFlags/snippets/demo.page.snippet.FeatureFlagsDemo.html</code></pre>
+                        <pre class="bg-light p-2 rounded small mb-0"><code>core/vendor/ambrion/evocms-feature-flags/snippets/demo.page.snippet.FeatureFlagsDemo.html</code></pre>
                     </div>
                 </div>
             </div>
