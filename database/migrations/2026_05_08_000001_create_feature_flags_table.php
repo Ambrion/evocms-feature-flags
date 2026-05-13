@@ -12,9 +12,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        $prefix = config('database.connections.default.prefix', '');
-
-        Schema::create($prefix . 'feature_flags', function (Blueprint $table) {
+        Schema::create('feature_flags', function (Blueprint $table) {
             $table->string('name', 100)->primary()->comment('Имя флага в snake_case');
             $table->json('default_value')->nullable()->comment('Значение по умолчанию: true, false, "A", "B", 123, null');
             $table->json('rules')->nullable()->comment('Правила: [{"condition":"...","value":true}]');
@@ -32,7 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        $prefix = config('database.connections.default.prefix', '');
-        Schema::dropIfExists($prefix . 'feature_flags');
+        Schema::dropIfExists('feature_flags');
     }
 };

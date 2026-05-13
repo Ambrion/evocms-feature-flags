@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        $prefix = config('database.connections.default.prefix', '');
-
-        Schema::create($prefix . 'feature_flag_statistics', function (Blueprint $table) {
+        Schema::create('feature_flag_statistics', function (Blueprint $table) {
             $table->id();
             $table->string('flag_name', 100)->comment('Имя флага');
             $table->boolean('result')->comment('Результат оценки: true/false');
@@ -28,7 +26,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        $prefix = config('database.connections.default.prefix', '');
-        Schema::dropIfExists($prefix . 'feature_flag_statistics');
+        Schema::dropIfExists('feature_flag_statistics');
     }
 };
