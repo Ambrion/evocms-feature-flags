@@ -1,0 +1,54 @@
+[🇷🇺 Русский](README.ru.md) | [🇬🇧 English](README.md)
+
+# 🚩 Feature Flags для EvolutionCMS CE 3
+
+Управление фич-флагами с правилами, статистикой и A/B-тестированием.
+
+## 📦 Установка
+
+```bash
+php -d="memory_limit=-1" artisan package:installrequire ambrion/evocms-feature-flags "0.1.0-alpha"
+php artisan vendor:publish --provider=EvolutionCMS\FeatureFlags\FeatureFlagsServiceProvider
+php artisan migrate
+```
+
+## ⚙️ Быстрый старт
+
+1. Откройте **Менеджер → Модули → Feature Flags** в админке EvolutionCMS
+2. Создайте первый флаг
+3. Используйте в сниппетах:
+
+```php
+if ($flags->isEnabled('my_flag', context: ['user_role' => 'manager'])) {
+    // показать фичу
+}
+```
+
+## 🎯 Возможности
+
+- ✅ **Правила оценки**: Включайте фичи по роли пользователя, категории документа, дате, проценту трафика и другим условиям
+- ✅ **A/B-тестирование**: Распределяйте трафик между вариантами с детерминированным назначением пользователей
+- ✅ **Статистика и аналитика**: Отслеживайте оценки флагов, экспортируйте данные, визуализируйте распределение
+- ✅ **Админ-интерфейс**: Управляйте флагами прямо в менеджере EvolutionCMS — без правки конфигов
+- ✅ **TDD-friendly**: Доменно-ориентированный дизайн, тестируется без загрузки ядра Evo
+
+## 🔗 Документация
+
+- [Ядро Feature Flags Core](https://github.com/Ambrion/feature-flags-core)
+- [Сайт автора](https://ambrion.dev/?site=FeatureFlags)
+- [Telegram канал](https://t.me/ambrion_dev)
+
+## 📬 Поддержка
+
+- 🐛 Баги: [GitHub Issues](https://github.com/Ambrion/evocms-feature-flags/issues)
+- ✉️ Email: ping@ambrion.dev
+- 💬 Telegram: [@ambrion_dev](https://t.me/ambrion_dev)
+
+## 📜 Лицензия
+
+MIT © [Ambrion](https://ambrion.dev)
+
+---
+
+> 💡 **Примечание**: For English documentation, see [README.md](README.md).
+```

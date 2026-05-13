@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo: Feature Flags в Evolution CMS</title>
+    <!-- Bootstrap 5 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --ff-gradient-winter: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --ff-gradient-summer: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        }
+        .hero-banner { background: var(--ff-gradient-winter); color: white; border-radius: 1rem; }
+        .price-original { text-decoration: line-through; color: #9ca3af; }
+        .badge-flag { position: absolute; top: 10px; right: 10px; font-size: 0.7rem; z-index: 10; }
+        .demo-panel {
+            position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px);
+            padding: 1rem; border-radius: 12px; color: white; width: 280px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+        }
+        .demo-panel .form-select, .demo-panel .btn { font-size: 0.85rem; }
+        .feature-box { border: 2px dashed #e5e7eb; border-radius: 1rem; padding: 1.5rem; transition: all 0.2s; }
+        .feature-box:hover { border-color: #6366f1; background: #f8fafc; }
+        .cta-variant-a { background: #10b981; color: white; border: none; }
+        .cta-variant-b { background: #f43f5e; color: white; border: none; transform: scale(1.05); box-shadow: 0 4px 12px rgba(244,63,94,0.3); }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- 🔹 Демо-панель управления контекстом (фиксированная) -->
+<div class="demo-panel" id="demoPanel">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="mb-0 fw-bold"><i class="fa fa-flask me-2"></i>Демо-контекст</h6>
+        <button class="btn btn-sm btn-outline-light" onclick="resetDemo()"><i class="fa fa-undo"></i></button>
+    </div>
+    <div class="mb-2">
+        <label class="form-label small text-muted">Роль пользователя</label>
+        <select class="form-select" id="roleSelect" onchange="updateDemoContext()">
+            <option value="guest">👤 Guest (Гость)</option>
+            <option value="user">👤 User (Клиент)</option>
+            <option value="manager">🛡️ Manager</option>
+        </select>
+    </div>
+    <div class="mb-2">
+        <label class="form-label small text-muted">Дата (для сезонных флагов)</label>
+        <input type="date" class="form-control" id="dateInput" onchange="updateDemoContext()" value="">
+    </div>
+    <div class="mb-3">
+        <label class="form-label small text-muted">Категория документа</label>
+        <select class="form-select" id="catSelect" onchange="updateDemoContext()">
+            <option value="general">📦 General</option>
+            <option value="electronics">⚡ Electronics</option>
+            <option value="clothing">👕 Clothing</option>
+        </select>
+    </div>
+    <div class="alert alert-info small mb-0 py-2">
+        <i class="fa fa-info-circle me-1"></i> Параметры передаются через <code>$_GET</code>
+    </div>
+</div>
+
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-2">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#"><i class="fa fa-flag text-warning me-2"></i>Feature Flags Demo</a>
+        <span class="text-light small d-none d-md-block">Evolution CMS 3.x + TDD/Domain-Driven</span>
+    </div>
+</nav>
+
+<main class="container py-4">
+    <!-- 1. Сезонный баннер -->
+    <section class="mb-5">
+        <div class="hero-banner p-4 p-md-5 text-center position-relative overflow-hidden">
+            <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">📅 Сезонный флаг</span>
+            <h1 class="display-5 fw-bold mb-3">🎁 Специальное предложение</h1>
+            <p class="lead mb-4" id="bannerContent">
+                <!-- Вызов сниппета: проверяет current_date -->
+                [!FeatureFlagsDemo?
+                &flag=`show_new_year_banner`
+                &yes=`<span class="fw-bold text-warning">Зимняя распродажа! Скидки до 50% на электронику и одежду.</span>`
+                &no=`<span class="opacity-75">Сезонные акции временно не активны. Следите за обновлениями!</span>`
+                !]
+            </p>
+            <button class="btn btn-light btn-lg fw-semibold px-4">Подробнее</button>
+        </div>
+    </section>
+
+    <!-- 2. Сетка продуктов с флагами -->
+    <h2 class="mb-4 fw-bold">🛍️ Демонстрация сценариев</h2>
+    <div class="row g-4">
+
+        <!-- Карточка 1: Ролевые цены -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 feature-box">
+                <span class="badge bg-primary badge-flag">Role-Based</span>
+                <div class="card-body">
+                    <h5 class="card-title">Смартфон Pro X</h5>
+                    <p class="text-muted small">Категория: electronics</p>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <!-- Вызов сниппета: проверяет user_role -->
+                        <span class="fs-4 fw-bold text-success" id="userPrice">
+                                [!FeatureFlagsDemo?
+                                    &flag=`discount_for_users`
+                                    &yes=`<span class="price-original fs-6">100 $</span> 90 $`
+                                    &no=`100 $`
+                                !]
+                            </span>
+                    </div>
+                    <p class="small text-muted mb-3">
+                        Флаг <code>discount_for_users</code> активирует скидку при <code>user_role=user</code>.
+                    </p>
+                    <div class="d-grid">
+                        <button class="btn btn-primary btn-sm">В корзину</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 2: A/B тест CTA -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 feature-box">
+                <span class="badge bg-info badge-flag">A/B Test</span>
+                <div class="card-body text-center">
+                    <h5 class="card-title">Подписка на рассылку</h5>
+                    <p class="text-muted small">Тест конверсии кнопок</p>
+                    <div class="my-4">
+                            <span id="ctaContent">
+                                [!FeatureFlagsDemo?
+                                    &flag=`cta_variant_test`
+                                    &yes=`<button class="btn cta-variant-a btn-lg px-4 rounded-pill">Получить скидку 10%</button>`
+                                    &no=`<button class="btn btn-dark btn-lg px-4 rounded-pill">Подписаться на новости</button>`
+                                !]
+                            </span>
+                    </div>
+                    <p class="small text-muted">
+                        Флаг <code>cta_variant_test</code> распределяет трафик по хешу сессии. Детерминировано для одного пользователя.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 3: Постепенный релиз UI -->
+        <div class="col-md-12 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 feature-box">
+                <span class="badge bg-success badge-flag">Gradual Rollout</span>
+                <div class="card-body">
+                    <h5 class="card-title">Отзывы покупателей</h5>
+                    <p class="text-muted small">Новый блок оценки (20% трафика)</p>
+
+                    <div id="reviewsBlock" class="mb-3">
+                        [!FeatureFlagsDemo?
+                        &flag=`new_review_section`
+                        &yes=`
+                        <div class="bg-white p-3 rounded shadow-sm border">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-bold">⭐⭐⭐⭐⭐</span>
+                                <small class="text-muted">2 часа назад</small>
+                            </div>
+                            <p class="small mb-0">Отличный товар! Доставили быстро, упаковка надёжная. Рекомендую.</p>
+                            <div class="mt-2 pt-2 border-top text-end">
+                                <button class="btn btn-outline-primary btn-sm">Показать ещё</button>
+                            </div>
+                        </div>
+                        `
+                        &no=`<div class="text-center py-4 text-muted"><i class="fa fa-comments fa-2x mb-2"></i><br>Отзывов пока нет</div>`
+                        !]
+                    </div>
+
+                    <p class="small text-muted mb-0">
+                        Флаг <code>new_review_section</code> показывает новый блок только 20% пользователей для мониторинга нагрузки.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карточка 4: Категорийный флаг -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm border-0 feature-box">
+                <span class="badge bg-warning badge-flag">📁 Category-Based</span>
+                <div class="card-body">
+                    <h5 class="card-title">Новый шаблон товара</h5>
+                    <p class="text-muted small">
+                        Текущая категория:
+                    <div id="categoryBadge">
+                                <span class="badge bg-secondary fs-6 shadow d-flex align-items-center gap-2">
+                                    <i class="fa fa-folder-open"></i>
+                                    <span id="categoryLabel">📦 General</span>
+                                </span>
+                    </div>
+                    </p>
+
+                    <div class="mb-3">
+                        [!FeatureFlagsDemo?
+                        &flag=`new_product_template`
+                        &yes=`<div class="alert alert-success mb-0"><i class="fa fa-sparkles me-2"></i>✨ Новый дизайн карточки!</div>`
+                        &no=`<div class="alert alert-secondary mb-0"><i class="fa fa-box me-2"></i>Стандартный дизайн</div>`
+                        !]
+                    </div>
+
+                    <p class="small text-muted mb-0">
+                        Флаг <code>new_product_template</code> активируется при <code>category=electronics</code>.
+                        <br>Попробуй выбрать <strong>⚡ Electronics</strong> в панели.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Таблица соответствия флагов -->
+    <div class="mt-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">🔍 Сопоставление флагов и сценариев</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="bg-light">
+                    <tr>
+                        <th>Флаг</th>
+                        <th>Контекст</th>
+                        <th>Логика</th>
+                        <th>Статус</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><code>show_new_year_banner</code></td>
+                        <td><code>current_date</code></td>
+                        <td>BETWEEN 12-01 AND 01-31</td>
+                        <td><span class="badge bg-success">Активен в декабре</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>discount_for_users</code></td>
+                        <td><code>user_role</code></td>
+                        <td>user_role IN (user, manager)</td>
+                        <td><span class="badge bg-info">Динамический</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>cta_variant_test</code></td>
+                        <td><code>user_hash</code></td>
+                        <td>PERCENTAGE 50</td>
+                        <td><span class="badge bg-warning text-dark">A/B Тест</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>new_review_section</code></td>
+                        <td><code>user_hash</code></td>
+                        <td>PERCENTAGE 20</td>
+                        <td><span class="badge bg-secondary">Канареечный</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>new_product_template</code></td>
+                        <td><code>category</code></td>
+                        <td>electronics</td>
+                        <td><span class="badge bg-success">Категория</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-dark text-light py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-0 small opacity-75">Evolution CMS 3.x Feature Flags Demo • TDD + Clean Architecture</p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- 🔹 JS: управление контекстом через GET-параметры -->
+<script>
+    // Установка текущей даты в инпут при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+        const dateInput = document.getElementById('dateInput');
+        if (dateInput && !dateInput.value) {
+            dateInput.value = new Date().toISOString().split('T')[0];
+        }
+    });
+
+    // Обновление контекста: перезагрузка с новыми GET-параметрами
+    function updateDemoContext() {
+        const role = document.getElementById('roleSelect').value;
+        const date = document.getElementById('dateInput').value;
+        const cat  = document.getElementById('catSelect').value;
+        const url = new URL(window.location.href);
+
+        // Устанавливаем параметры демо-контекста
+        url.searchParams.set('demo_role', role);
+        url.searchParams.set('demo_date', date);
+        url.searchParams.set('demo_category', cat);
+
+        // Перезагружаем страницу — сниппет увидит новые $_GET и пересчитает флаги
+        window.location.href = url.toString();
+    }
+
+    // Сброс демо-параметров к реальным значениям из CMS
+    function resetDemo() {
+        const url = new URL(window.location.href);
+        ['demo_role', 'demo_date', 'demo_category', 'demo_target_id'].forEach(k => url.searchParams.delete(k));
+        window.location.href = url.pathname + (url.search ? url.search : '');
+    }
+
+    // Синхронизация селектов с текущими параметрами при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.has('demo_role')) {
+            document.getElementById('roleSelect').value = params.get('demo_role');
+        }
+        if (params.has('demo_date')) {
+            document.getElementById('dateInput').value = params.get('demo_date');
+        }
+        if (params.has('demo_category')) {
+            document.getElementById('catSelect').value = params.get('demo_category');
+            // Обновляем бейдж категории
+            updateCategoryBadge(params.get('demo_category'));
+        }
+    });
+
+    // Обновление визуального индикатора категории
+    function updateCategoryBadge(category) {
+        const labels = {
+            'general': '📦 General',
+            'electronics': '⚡ Electronics',
+            'clothing': '👕 Clothing'
+        };
+        const colors = {
+            'general': 'secondary',
+            'electronics': 'warning text-dark',
+            'clothing': 'info'
+        };
+
+        const label = document.getElementById('categoryLabel');
+        const badge = label?.closest('.badge');
+
+        if (label && badge) {
+            label.textContent = labels[category] || '📦 General';
+            badge.className = `badge fs-6 shadow d-flex align-items-center gap-2 bg-${colors[category] || 'secondary'}`;
+        }
+    }
+</script>
+</body>
+</html>

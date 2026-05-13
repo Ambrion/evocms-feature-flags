@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace EvolutionCMS\FeatureFlags\Application\Exceptions;
+
+use InvalidArgumentException;
+
+final class FlagValidationException extends InvalidArgumentException
+{
+    public function __construct(public readonly array $errors)
+    {
+        parent::__construct('Validation failed');
+    }
+}
