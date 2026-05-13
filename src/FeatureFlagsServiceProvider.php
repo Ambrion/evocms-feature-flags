@@ -19,6 +19,7 @@ use FeatureFlags\Core\Domain\Logger\FlagUsageLoggerInterface;
 use FeatureFlags\Core\Domain\Logger\NullFlagUsageLogger;
 use FeatureFlags\Core\Domain\Repository\FlagRepositoryInterface;
 use FeatureFlags\Core\Domain\Specification\CategorySpecification;
+use FeatureFlags\Core\Domain\Specification\CompositeSpecification;
 use FeatureFlags\Core\Domain\Specification\DateBetweenSpecification;
 use FeatureFlags\Core\Domain\Specification\PercentageSpecification;
 use FeatureFlags\Core\Domain\Specification\TargetIdSpecification;
@@ -177,12 +178,17 @@ class FeatureFlagsServiceProvider extends ServiceProvider
 
     private function getSpecifications(): array
     {
-        return [
-            new TargetIdSpecification(),
-            new CategorySpecification(),
+        $atomicSpecs = [
             new UserRoleSpecification(),
-            new DateBetweenSpecification(),
+            new CategorySpecification(),
             new PercentageSpecification(),
+            new DateBetweenSpecification(),
+            new TargetIdSpecification(),
+        ];
+
+        return [
+            new CompositeSpecification($atomicSpecs),
+            ...$atomicSpecs,
         ];
     }
 }
