@@ -12,6 +12,16 @@ php artisan vendor:publish --provider=EvolutionCMS\FeatureFlags\FeatureFlagsServ
 php artisan migrate
 ```
 
+## ⚙️ Requirements
+
+| Requirement         | Version   | Notes                                               |
+|---------------------|-----------|-----------------------------------------------------|
+| **PHP**             | `^8.3`    | Required for typed properties and readonly classes  |
+| **EvolutionCMS CE** | `≥3.1.30` | Tested on v3.1.30; may work on earlier 3.x versions |
+| **Composer**        | `^2.0`    | For package installation and dependency management  |
+
+> 💡 **Note**: The module uses modern PHP 8.3 features (`readonly` classes, typed properties, match expressions). PHP 8.1–8.2 are **not supported**.
+
 ## ⚙️ Quick Start
 
 1. Open **Manager → Modules → Feature Flags** in EvolutionCMS admin panel
