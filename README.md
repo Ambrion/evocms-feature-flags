@@ -51,4 +51,3 @@ MIT © [Ambrion](https://ambrion.dev)
 ---
 
 > 💡 **Note**: For Russian documentation, see [README.ru.md](README.ru.md).
-```
