@@ -7,9 +7,11 @@
         <a href="{{ route('featureFlags::index') }}" class="btn btn-info">
             <i class="fa fa-list"></i> @lang('featureFlags::global.flag_list')
         </a>
-        <a href="{{ route('featureFlags::statistics.show', $flag->name) }}" class="btn btn-secondary">
-            <i class="fa fa-chart-bar"></i> @lang('featureFlags::global.flag_statistic')
-        </a>
+        @if($flag->name)
+            <a href="{{ route('featureFlags::statistics.show', $flag->name) }}" class="btn btn-secondary">
+                <i class="fa fa-chart-bar"></i> @lang('featureFlags::global.flag_statistic')
+            </a>
+        @endif
         <a href="javascript:;" class="btn btn-secondary" onclick="location.reload();">
             <i class="fa fa-refresh"></i><span> @lang('featureFlags::global.refresh')</span>
         </a>
