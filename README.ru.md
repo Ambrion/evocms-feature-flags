@@ -9,7 +9,6 @@
 ```bash
 cd /core
 php artisan package:installrequire ambrion/evocms-feature-flags "v0.1.0-alpha"
-composer dump-autoload
 php artisan vendor:publish --provider="EvolutionCMS\FeatureFlags\FeatureFlagsServiceProvider"
 php artisan migrate
 ```
