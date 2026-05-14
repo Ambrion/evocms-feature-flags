@@ -9,6 +9,7 @@ Manage feature flags with rules engine, statistics, and A/B testing — built fo
 ```bash
 cd /core
 php artisan package:installrequire ambrion/evocms-feature-flags "v0.1.0-alpha"
+php artisan vendor:publish --provider="EvolutionCMS\FeatureFlags\FeatureFlagsServiceProvider"
 composer dump-autoload
 php artisan migrate
 ```

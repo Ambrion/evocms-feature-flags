@@ -47,6 +47,11 @@ class FeatureFlagsServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        // 0. Публикуем конфиг для правил и всё что пригодится
+        $this->publishes([
+            __DIR__ . '/../publishable/assets'  => MODX_BASE_PATH . 'assets',
+        ]);
+
         // 1. Сначала загружаем конфиг (ОБЯЗАТЕЛЬНО до биндингов!)
         $configPath = __DIR__ . '/../config/feature_flags_config.php';
         if (file_exists($configPath) && $this->app->bound('config')) {
@@ -116,13 +121,33 @@ class FeatureFlagsServiceProvider extends ServiceProvider
 
             return match ($driver) {
                 'config' => new ConfigFlagAdminRepository(
-                    $config instanceof ConfigContract
-                        ? $config->get('feature_flags.config_path')
-                        : __DIR__ . '/../config/feature_flags_rules.php'
+                    $this->resolveRulesConfigPath($config)
                 ),
                 default => new FlagAdminEloquentRepository(new EloquentFeatureFlag())
             };
         });
+    }
+
+    /**
+     * Резолвер пути к файлу правил с многоуровневым фоллбэком.
+     */
+    private function resolveRulesConfigPath(ConfigContract $config): string
+    {
+        // 1. Явный путь из конфига (уже содержит env() + дефолт)
+        $path = $config->get('feature_flags.config_path');
+
+        if ($path && !str_starts_with($path, '/') && !str_starts_with($path, '\\')) {
+            $basePath = defined('MODX_BASE_PATH') ? rtrim(MODX_BASE_PATH, '/\\') : '';
+            $path = $basePath . '/' . ltrim($path, '/\\');
+        }
+
+        // 2. Если файл существует — используем его
+        if ($path && file_exists($path)) {
+            return $path;
+        }
+
+        // 3. Fallback на встроенный конфиг пакета (для тестов / CI)
+        return __DIR__ . '/../config/feature_flags_rules.php';
     }
 
     private function resolveDriver(): string
