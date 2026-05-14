@@ -70,4 +70,24 @@ final readonly class ConfigFileFlagRepository implements FlagRepositoryInterface
             return [];
         }
     }
+
+    /**
+     * Проверяет, включено ли логирование для флага из конфига
+     */
+    public function isLoggingEnabled(FlagName $name): bool
+    {
+        if (!file_exists($this->configPath)) {
+            return false;
+        }
+
+        $config = require $this->configPath;
+        $flagConfig = $config[$name->value] ?? null;
+
+        if ($flagConfig === null) {
+            return false;
+        }
+
+        // Читаем log_statistics, по умолчанию — false
+        return (bool) ($flagConfig['log_statistics'] ?? false);
+    }
 }

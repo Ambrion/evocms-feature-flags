@@ -20,4 +20,6 @@ interface FlagAdminRepositoryInterface
     public function update(string $name, AdminFlagDTO $dto): AdminFlagDTO;
 
     public function delete(string $name): void;
+
+    public function isLoggingEnabled(string $name): bool;
 }

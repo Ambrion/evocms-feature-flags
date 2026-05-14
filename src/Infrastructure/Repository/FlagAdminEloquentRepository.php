@@ -88,4 +88,13 @@ final readonly class FlagAdminEloquentRepository implements FlagAdminRepositoryI
             'log_statistics' => $dto->log_statistics,
         ];
     }
+
+    public function isLoggingEnabled(string $name): bool
+    {
+        $flag = $this->model->newQuery()
+            ->where('name', $name)
+            ->first();
+
+        return $flag !== null && $flag->log_statistics;
+    }
 }

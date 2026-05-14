@@ -55,4 +55,20 @@ final readonly class ConfigFlagAdminRepository implements FlagAdminRepositoryInt
     {
         throw new RuntimeException('Config provider is read-only. Use database repository for CRUD.');
     }
+
+    public function isLoggingEnabled(string $name): bool
+    {
+        if (!file_exists($this->configPath)) {
+            return false;
+        }
+
+        $config = require $this->configPath;
+        $flagConfig = $config[$name] ?? null;
+
+        if ($flagConfig === null) {
+            return false;
+        }
+
+        return (bool) ($flagConfig['log_statistics'] ?? false);
+    }
 }
