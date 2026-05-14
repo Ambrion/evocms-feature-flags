@@ -33,7 +33,7 @@
                     </div>
                     <div class="card-body">
                         <p class="small mb-2">Create a snippet named <strong>FeatureFlagsDemo</strong> and paste:</p>
-                        <pre class="bg-light p-2 rounded small mb-0"><code class="language-php">return require MODX_BASE_PATH . 'core/vendor/ambrion/evocms-feature-flags/snippets/snippet.FeatureFlagsDemo.php';</code></pre>
+                        <pre class="bg-light p-2 rounded small mb-0"><code class="language-php">return require MODX_BASE_PATH . 'assets/snippets/feature_flags/snippet.FeatureFlagsDemo.php';</code></pre>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="card-body">
                         <p class="small mb-2">Create a document and paste content from:</p>
-                        <pre class="bg-light p-2 rounded small mb-0"><code>core/vendor/ambrion/evocms-feature-flags/snippets/demo.page.snippet.FeatureFlagsDemo.html</code></pre>
+                        <pre class="bg-light p-2 rounded small mb-0"><code>assets/snippets/feature_flags/demo.page.snippet.FeatureFlagsDemo.html</code></pre>
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
 
         <div class="alert alert-warning mt-3 mb-0">
             <i class="fa fa-exclamation-triangle me-2"></i>
-            <strong>Important:</strong> Make sure <code>core/vendor/ambrion/evocms-feature-flags/config/feature_flags_rules.php</code> exists and contains rules. Without them, the demo will be as boring as a Monday morning.
+            <strong>Important:</strong> Make sure <code>assets/modules/feature_flags/config/feature_flags_rules.php</code> exists and contains rules. Without them, the demo will be as boring as a Monday morning.
         </div>
 
         <hr class="my-4">
