@@ -18,7 +18,7 @@ return [
     'log_statistics' => env('FEATURE_FLAGS_LOGGER', false),
 
     'statistics' => [
-        'per_page' => (int) env('FEATURE_FLAGS_STATISTICS_PER_PAGE', 111),
+        'per_page' => (int) env('FEATURE_FLAGS_STATISTICS_PER_PAGE', 50),
         // Максимальное значение (защита от злоупотреблений)
         'max_per_page' => (int) env('FEATURE_FLAGS_STATISTICS_MAX_PER_PAGE', 200),
     ],
