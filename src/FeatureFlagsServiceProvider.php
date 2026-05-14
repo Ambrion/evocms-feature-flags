@@ -50,6 +50,7 @@ class FeatureFlagsServiceProvider extends ServiceProvider
         // 0. Публикуем конфиг для правил и всё что пригодится
         $this->publishes([
             __DIR__ . '/../publishable/assets'  => MODX_BASE_PATH . 'assets',
+            __DIR__ . '/../publishable/core'  => MODX_BASE_PATH . 'core',
         ]);
 
         // 1. Сначала загружаем конфиг (ОБЯЗАТЕЛЬНО до биндингов!)
