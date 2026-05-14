@@ -25,6 +25,7 @@ final readonly class ConfigFlagAdminRepository implements FlagAdminRepositoryInt
                 rules: $data['rules'] ?? [],
                 is_active: true, // Конфигурационные флаги всегда активны
                 description: 'Загружено из конфигурационного файла',
+                log_statistics: $this->isLoggingEnabled($name),
             );
         }
 
