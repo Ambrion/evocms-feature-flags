@@ -10,7 +10,7 @@ return [
     'config_path' => env(
         'FEATURE_FLAGS_CONFIG_PATH',
         defined('MODX_BASE_PATH')
-            ? MODX_BASE_PATH . '/assets/modules/feature_flags/config/feature_flags_rules.php'
+            ? MODX_BASE_PATH . 'assets/modules/feature_flags/config/feature_flags_rules.php'
             : __DIR__ . '/../publishable/assets/modules/feature_flags/config/feature_flags_rules.php'
     ),
 
