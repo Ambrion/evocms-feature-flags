@@ -49,6 +49,17 @@
       "providers": [
         "EvolutionCMS\\FeatureFlags\\FeatureFlagsServiceProvider"
       ]
+    },
+    "evo": {
+      "post-install": {
+        "publish": {
+          "provider": "EvolutionCMS\\FeatureFlags\\FeatureFlagsServiceProvider"
+        },
+        "migrate": {
+          "run": true,
+          "force": false
+        }
+      }
     }
   },
   "minimum-stability": "alpha",
